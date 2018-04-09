@@ -1,8 +1,8 @@
-// Import the weather module
+// Import the api module
 import KpayMerchantApi from '../common/kpay_merchant_api/phone';
 import { SUMMARY, TODAY, YESTERDAY } from '../common/kpay_merchant_api/common';
 
-// Create the weather object
+// Create the api object
 // this is always needed to answer the device's requests
 let kpayMerchantApi = new KpayMerchantApi();
 kpayMerchantApi.setApiKey('0123456789abcdef0123456789abcdef');
