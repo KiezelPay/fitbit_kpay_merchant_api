@@ -1,11 +1,12 @@
 # K·pay merchant API module for Fitbit OS
 
 Library to get the data available via the K·pay merchant API and use it in an app or clockface (https://kiezelpay.com/api/merchant/documentation/).
-Many thanks to Grégoire Sage for letting me use his awesome <a href="https://github.com/gregoiresage/fitbit-weather">weather module</a> as basis for this code!
+
+Many thanks to Grégoire Sage for letting me use his awesome <a href="https://github.com/gregoiresage/fitbit-weather" target="_blank">weather module</a> as basis for this code!
 
 ## Usage
 
-Copy the *common/kpay_merchant_api* folder in your *commons* folder
+Copy the *common/kpay_merchant_api* folder in your *common* folder
 
 ### Companion
 
@@ -62,7 +63,7 @@ kpayMerchantApi.fetchSummary();
 ```
 
 ## API
-* **setApiKey(string)** : set the api key for your provider (companion only). Default is ``
+* **setApiKey(string)** : set your K·pay API key (companion only). You can get your personal key at <a href="https://kiezelpay.com/account/api" target="_blank">https://kiezelpay.com/account/api</a>. Default is ``
 * **setMaximumAge(int)** : set the maximum age in milliseconds of a possible cached sales data that is acceptable to return. Default is `15*60*1000` (15 minutes)
 * **onsuccess(type, data)** : set the event handler for when new sales data is available. The type can be SUMMARY, TODAY or YESTERDAY (import values from '/common/kpay_merchant_api/common.js')
 * **onerror(error)** : set the event handler for when an error occurs
@@ -112,3 +113,5 @@ kpayMerchantApi.fetchSummary();
     }
   }
 ```
+
+For more API documentation check out <a href="https://kiezelpay.com/api/merchant/documentation" target="_blank">https://kiezelpay.com/api/merchant/documentation</a>.
