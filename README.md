@@ -1,6 +1,6 @@
 # K·pay merchant API module for Fitbit OS
 
-Library to get the data available via the K·pay merchant API and use it in an app or clockface (https://kiezelpay.com/api/merchant/documentation/).
+Library to get the data available via the K·pay merchant API and use it in an app or clockface.
 
 Many thanks to Grégoire Sage for letting me use his awesome <a href="https://github.com/gregoiresage/fitbit-weather" target="_blank">weather module</a> as basis for this code!
 
@@ -30,7 +30,7 @@ import KpayMerchantApi from '../common/kpay_merchant_api/device';
 import { SUMMARY, TODAY, YESTERDAY } from '../common/kpay_merchant_api/common';
 
 let kpayMerchantApi = new KpayMerchantApi();
-weather.setMaximumAge(30 * 60 * 1000);    //only get new data every 30 minutes
+kpayMerchantApi.setMaximumAge(30 * 60 * 1000);    //only get new data every 30 minutes
 
 kpayMerchantApi.onsuccess = (type, data) => {
   let receivedData = undefined;
