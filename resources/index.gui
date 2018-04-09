@@ -1,0 +1,6 @@
+<svg viewport-fill="black">
+  <text id="totalPurchases" x="10" y="30"/>
+  <text id="totalAmount" x="10" y="80"/>
+  <text id="nextPayDate" x="10" y="130"/>
+  <text id="nextPayAmount" x="10" y="180"/>
+</svg>

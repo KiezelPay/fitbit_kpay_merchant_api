@@ -1,0 +1,21 @@
+{
+  "fitbit": {
+    "appUUID": "5be52844-3a67-4fb9-9525-9f5788e5624a",
+    "appType": "app",
+    "appDisplayName": "KPay-Merchant-Api-Demo",
+    "iconFile": "resources/icon.png",
+    "wipeColor": "#009688",
+    "requestedPermissions": [
+      "access_internet"
+    ],
+    "buildTargets": [
+      "higgs",
+      "meson"
+    ],
+    "i18n": {
+      "en": {
+        "name": "KPay-Merchant-Api-Demo"
+      }
+    }
+  }
+}
