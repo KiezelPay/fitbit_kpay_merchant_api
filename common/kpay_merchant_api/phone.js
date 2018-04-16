@@ -15,17 +15,44 @@ export default class KpayMerchantApi {
     this.onerror = undefined;
     this.onsuccess = undefined;
     
+    this._internalOnSuccess = (dataType, data) => {
+      //received some data
+      console.log(`KPay Merchant API '${dataType}' data received: ${JSON.stringify(data)}`);
+
+      //store new data
+      this._apiData.set(dataType, data);
+
+      //fire success event
+      let successData = this._apiData.get(dataType);
+      if (this.onsuccess) {
+        this.onsuccess(dataType, successData);
+      }
+
+      //send it the watch
+      outbox
+        .enqueue(common.MESSAGE_DATA_FILE, cbor.encode(successData))
+        .catch(error => console.log(`Error sending KPay Merchant API '${dataType}' data to watch: ${error}`));
+    };
+    
+    this._internalOnError = (dataType, error) => {
+      //error getting data
+      let errorMsg = `Error getting KPay Merchant API '${dataType}' data: ${error}`;
+      console.log(errorMsg);
+
+      if (this.onerror) {
+        this.onerror(errorMsg);
+      }
+
+      //send error to the watch
+      outbox
+        .enqueue(common.MESSAGE_DATA_FILE, cbor.encode({ error: errorMsg }))
+        .catch(error => console.log("Error sending KPay Merchant API error to watch: " + error));
+    };
+    
     peerSocket.addEventListener("message", (evt) => {
       // We are receiving a request from the app
       if (evt.data && evt.data[common.MESSAGE_KEY]) {
         let msg = evt.data[common.MESSAGE_KEY];
-        if (!this._apiKey) {
-          console.log("ERROR: KPay Merchant API apikey not set! Cannot fetch data without valid apikey!");
-          return;
-        }
-        if (this._apiKey == '0123456789abcdef0123456789abcdef') {
-          console.log("WARNING: test api key with random data is used, replace with your own api key for real data!");
-        }
         
         //check which data types we need to get from the api
         let dataTypesToGet = [];
@@ -36,39 +63,7 @@ export default class KpayMerchantApi {
         }
               
         //get the data
-        prv_fetchRemote(dataTypesToGet, this._apiKey, 
-          (dataType, data) => {
-            //received some data
-            console.log(`KPay Merchant API '${dataType}' data received: ${JSON.stringify(data)}`);
-          
-            //store new data
-            this._apiData.set(dataType, data);
-          
-            //fire success event
-            let successData = this._apiData.get(dataType);
-            if (this.onsuccess) {
-              this.onsuccess(dataType, successData);
-            }
-          
-            //send it the watch
-            outbox
-              .enqueue(common.MESSAGE_DATA_FILE, cbor.encode(successData))
-              .catch(error => console.log(`Error sending KPay Merchant API '${dataType}' data to watch: ${error}`));
-          }, 
-          (dataType, error) => {
-            //error getting data
-            let errorMsg = `Error getting KPay Merchant API '${dataType}' data: ${error}`;
-            console.log(errorMsg);
-          
-            if (this.onerror) {
-              this.onerror(errorMsg);
-            }
-          
-            //send error to the watch
-            outbox
-              .enqueue(common.MESSAGE_DATA_FILE, cbor.encode({ error: errorMsg }))
-              .catch(error => console.log("Error sending KPay Merchant API error to watch: " + error));
-          });
+        prv_fetchRemote(dataTypesToGet, this._apiKey, this._internalOnSuccess, this._internalOnError);
       }
     });
   }
@@ -133,29 +128,7 @@ export default class KpayMerchantApi {
     
     if (anyOutOfDate) {
       //get fresh data
-      prv_fetchRemote(dataTypes, this._apiKey,
-          (dataType, data) => {
-            //received some data
-            console.log(`KPay Merchant API '${dataType}' data received: ${JSON.stringify(data)}`);
-          
-            //store new data
-            this._apiData.set(dataType, data);
-          
-            //fire success event
-            let successData = this._apiData.get(dataType);
-            if (this.onsuccess) {
-              this.onsuccess(dataType, successData);
-            }
-          }, 
-          (dataType, error) => {
-            //error getting data
-            let errorMsg = `Error getting KPay Merchant API '${dataType}' data: ${error}`;
-            console.log(errorMsg);
-          
-            if (this.onerror) {
-              this.onerror(errorMsg);
-            }
-        });
+      prv_fetchRemote(dataTypes, this._apiKey, this._internalOnSuccess, this._internalOnError);
     }
     
     //return previous data
@@ -179,6 +152,14 @@ prv_fetch_functions[common.TODAY] = prv_fetchRemoteToday;
 prv_fetch_functions[common.YESTERDAY] = prv_fetchRemoteYesterday;
 
 function prv_fetchRemote(dataTypes, apiKey, success, error) {
+  if (!apiKey) {
+    console.log("ERROR: KPay Merchant API apikey not set! Cannot fetch data without valid apikey!");
+    return;
+  }
+  if (apiKey == '0123456789abcdef0123456789abcdef') {
+    console.log("WARNING: test api key with random data is used, replace with your own api key for real data!");
+  }
+  
   //fetch all requested data
   for (let i = 0; i < dataTypes.length; i++) {
     prv_fetch_functions[dataTypes[i]](apiKey, success, error);
