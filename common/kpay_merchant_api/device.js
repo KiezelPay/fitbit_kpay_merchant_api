@@ -15,7 +15,7 @@ export default class KpayMerchantApi {
     // Event occurs when new file(s) are received
     inbox.addEventListener("newfile", (event) => {
       let fileName = getCustomFile();
-      if (fileName && fileName === common.MESSAGE_DATA_FILE) {
+      if (fileName) {
         let msg = readFileSync(fileName, "cbor");
         this._parseIncomingMsg(msg);
       }
@@ -120,7 +120,12 @@ export default class KpayMerchantApi {
   }  
 };
 
-const MY_FILE_NAMES = [common.MESSAGE_DATA_FILE];
+const MY_FILE_NAMES = [
+  common.MESSAGE_DATA_FILE[common.SUMMARY],
+  common.MESSAGE_DATA_FILE[common.TODAY],
+  common.MESSAGE_DATA_FILE[common.YESTERDAY],
+  common.MESSAGE_DATA_FILE[common.ERROR]
+];
 
 let otherFiles = [];
 let myFiles    = [];

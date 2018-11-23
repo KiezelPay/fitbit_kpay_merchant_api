@@ -30,7 +30,7 @@ export default class KpayMerchantApi {
 
       //send it the watch
       outbox
-        .enqueue(common.MESSAGE_DATA_FILE, cbor.encode(successData))
+        .enqueue(common.MESSAGE_DATA_FILE[dataType], cbor.encode(successData))
         .catch(error => console.log(`Error sending KPay Merchant API '${dataType}' data to watch: ${error}`));
     };
     
@@ -45,7 +45,7 @@ export default class KpayMerchantApi {
 
       //send error to the watch
       outbox
-        .enqueue(common.MESSAGE_DATA_FILE, cbor.encode({ error: errorMsg }))
+        .enqueue(common.MESSAGE_DATA_FILE[common.ERROR], cbor.encode({ error: errorMsg }))
         .catch(error => console.log("Error sending KPay Merchant API error to watch: " + error));
     };
     
